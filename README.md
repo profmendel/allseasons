@@ -75,7 +75,13 @@ online. All are optional during early development.
 2. Run the schema, then the seed, in the SQL editor (or via the Supabase CLI):
    - [`supabase/migrations/0001_initial_schema.sql`](supabase/migrations/0001_initial_schema.sql)
    - [`supabase/seed.sql`](supabase/seed.sql)
-3. Paste the project URL + keys into `.env.local`.
+3. Create a **public Storage bucket named `receipts`** (customers upload deposit
+   proof there via the quote portal).
+4. Paste the project URL + keys into `.env.local`.
+
+Preview the customer portal any time at **`/quote/demo`** — it renders a sample
+quotation with the full accept → deposit → upload flow, even before Supabase is
+connected.
 
 Public content tables are protected by RLS (anon can read active rows only).
 Bookings, customers and payments are written exclusively via the server-side

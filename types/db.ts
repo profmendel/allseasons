@@ -140,3 +140,54 @@ export interface Faq {
   sort_order: number;
   is_active: boolean;
 }
+
+export interface BookingExtra {
+  name: string;
+}
+
+export interface Booking {
+  id: string;
+  reference: string;
+  contact_name: string;
+  contact_email: string;
+  contact_phone: string | null;
+  event_type: string | null;
+  event_date: string | null;
+  event_time: string | null;
+  location: string | null;
+  guest_count: number | null;
+  package_id: string | null;
+  special_requests: string | null;
+  menu_item_ids: string[];
+  extras: BookingExtra[];
+
+  cost_food: number | null;
+  cost_transport: number | null;
+  cost_decoration: number | null;
+  cost_equipment: number | null;
+  cost_staff: number | null;
+  discount: number | null;
+  tax: number | null;
+  total: number | null;
+  deposit_percent: number | null;
+  deposit_amount: number | null;
+
+  status: BookingStatus;
+  quote_sent_at: string | null;
+  quote_expires_at: string | null;
+  accepted_at: string | null;
+  confirmed_at: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface Payment {
+  id: string;
+  booking_id: string;
+  amount: number;
+  receipt_url: string | null;
+  status: PaymentStatus;
+  note: string | null;
+  verified_at: string | null;
+  created_at: string;
+}

@@ -2,6 +2,8 @@
 
 import { Resend } from "resend";
 import { createAdminSupabase } from "@/lib/supabase/admin";
+import { notifyNewReceipt } from "@/lib/email";
+import type { Booking } from "@/types/db";
 import {
   bookingSchema,
   contactSchema,
@@ -129,4 +131,123 @@ export async function submitContact(raw: ContactFormValues): Promise<ActionResul
     ok: true,
     message: "Thanks for reaching out! We'll get back to you very soon.",
   };
+}
+
+/* -------------------------------------------------------------------------- */
+/*  Customer portal actions                                                   */
+/* -------------------------------------------------------------------------- */
+
+/** Customer accepts their quote → moves to awaiting deposit. */
+export async function acceptQuote(id: string): Promise<ActionResult> {
+  if (!id) return { ok: false, message: "Missing booking reference." };
+  if (id === "demo") {
+    return { ok: true, message: "Quote accepted! Please complete your deposit to confirm." };
+  }
+
+  const supabase = createAdminSupabase();
+  if (!supabase) {
+    return { ok: true, message: "Quote accepted! Please complete your deposit to confirm." };
+  }
+
+  const { error } = await supabase
+    .from("bookings")
+    .update({ status: "awaiting_deposit", accepted_at: new Date().toISOString() })
+    .eq("id", id)
+    .eq("status", "quote_sent");
+
+  if (error) {
+    console.error("[acceptQuote] failed:", error.message);
+    return { ok: false, message: "Sorry, we couldn't update your quote. Please try again." };
+  }
+  return { ok: true, message: "Quote accepted! Please complete your deposit to confirm." };
+}
+
+/** Customer declines their quote. */
+export async function declineQuote(id: string): Promise<ActionResult> {
+  if (!id) return { ok: false, message: "Missing booking reference." };
+  if (id === "demo") {
+    return { ok: true, message: "Your quote has been declined." };
+  }
+
+  const supabase = createAdminSupabase();
+  if (!supabase) {
+    return { ok: true, message: "Your quote has been declined." };
+  }
+
+  const { error } = await supabase
+    .from("bookings")
+    .update({ status: "cancelled" })
+    .eq("id", id)
+    .in("status", ["quote_sent", "awaiting_deposit"]);
+
+  if (error) {
+    console.error("[declineQuote] failed:", error.message);
+    return { ok: false, message: "Sorry, something went wrong. Please try again." };
+  }
+  return { ok: true, message: "Your quote has been declined. We hope to cater for you another time." };
+}
+
+/** Customer uploads proof of deposit payment (Supabase Storage). */
+export async function uploadPaymentReceipt(formData: FormData): Promise<ActionResult> {
+  const id = String(formData.get("bookingId") || "");
+  const file = formData.get("receipt");
+  if (!id) return { ok: false, message: "Missing booking reference." };
+
+  if (id === "demo") {
+    return { ok: true, message: "Thank you! Your payment is being reviewed (demo)." };
+  }
+
+  const supabase = createAdminSupabase();
+  if (!supabase) {
+    return { ok: true, message: "Thank you! Your payment is being reviewed." };
+  }
+
+  if (!(file instanceof File) || file.size === 0) {
+    return { ok: false, message: "Please choose a receipt file to upload." };
+  }
+  if (file.size > 8 * 1024 * 1024) {
+    return { ok: false, message: "That file is too large (max 8MB). Please try a smaller file." };
+  }
+
+  const ext = file.name.includes(".") ? file.name.split(".").pop() : "dat";
+  const path = `${id}/${Date.now()}.${ext}`;
+
+  const { error: uploadError } = await supabase.storage
+    .from("receipts")
+    .upload(path, file, { contentType: file.type || undefined, upsert: false });
+
+  if (uploadError) {
+    console.error("[uploadPaymentReceipt] upload failed:", uploadError.message);
+    return {
+      ok: false,
+      message: "Sorry, the upload failed. Please try again or email the receipt to us directly.",
+    };
+  }
+
+  const { data: pub } = supabase.storage.from("receipts").getPublicUrl(path);
+
+  const { data: booking } = await supabase
+    .from("bookings")
+    .select("*")
+    .eq("id", id)
+    .maybeSingle();
+
+  await supabase.from("payments").insert({
+    booking_id: id,
+    amount: (booking?.deposit_amount as number | null) ?? 0,
+    receipt_url: pub?.publicUrl ?? null,
+    status: "submitted",
+  });
+
+  await supabase.from("bookings").update({ status: "deposit_received" }).eq("id", id);
+
+  if (booking) {
+    try {
+      await notifyNewReceipt(booking as Booking);
+    } catch (err) {
+      console.error("[uploadPaymentReceipt] notify failed:", err);
+    }
+  }
+
+  return { ok: true, message: "Thank you! Your payment has been received and is being reviewed." };
 }
