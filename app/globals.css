@@ -1,0 +1,253 @@
+@import "tailwindcss";
+
+/* Class-based dark mode (driven by next-themes on <html>) */
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* =========================================================================
+   All Seasons Catering — Design tokens
+   Aesthetic: warm editorial luxury. Ivory canvas, warm ink, deep-emerald
+   brand, gold accent. Every colour is a semantic CSS variable so the whole
+   brand can be re-skinned from this one block.
+   ========================================================================= */
+:root {
+  --radius: 0.85rem;
+
+  --background: #fbf7ef;          /* warm ivory canvas */
+  --foreground: #22190f;          /* warm near-black ink */
+
+  --card: #ffffff;
+  --card-foreground: #22190f;
+
+  --popover: #ffffff;
+  --popover-foreground: #22190f;
+
+  --primary: #1e4a38;            /* deep emerald — brand */
+  --primary-foreground: #f7f2e7;
+
+  --secondary: #f2ead9;         /* soft cream surface */
+  --secondary-foreground: #3a3226;
+
+  --muted: #f1e8d7;
+  --muted-foreground: #6f6455;
+
+  --accent: #c1922f;            /* signature gold */
+  --accent-foreground: #241a09;
+
+  /* Brand-direct tokens for expressive use */
+  --gold: #c1922f;
+  --gold-soft: #e8d3a0;
+  --forest: #1e4a38;
+  --forest-soft: #2f6a50;
+  --clay: #a9552f;              /* warm tertiary for occasional contrast */
+
+  --destructive: #b4402f;
+  --destructive-foreground: #fbf7ef;
+
+  --border: #e7dcc7;
+  --input: #e2d6bf;
+  --ring: #c1922f;
+}
+
+.dark {
+  --background: #13100b;
+  --foreground: #f0e8d8;
+
+  --card: #1b1710;
+  --card-foreground: #f0e8d8;
+
+  --popover: #1b1710;
+  --popover-foreground: #f0e8d8;
+
+  --primary: #3f8a68;
+  --primary-foreground: #08130d;
+
+  --secondary: #231e15;
+  --secondary-foreground: #ece3d2;
+
+  --muted: #221d14;
+  --muted-foreground: #a99d88;
+
+  --accent: #d8ac52;
+  --accent-foreground: #1a1305;
+
+  --gold: #d8ac52;
+  --gold-soft: #6b5624;
+  --forest: #3f8a68;
+  --forest-soft: #4f9d79;
+  --clay: #c56d44;
+
+  --destructive: #e06a54;
+  --destructive-foreground: #13100b;
+
+  --border: #322a1d;
+  --input: #3a3122;
+  --ring: #d8ac52;
+}
+
+/* Map tokens into Tailwind's theme so `bg-primary`, `text-gold`, etc. work.
+   `inline` keeps them as var() refs so .dark overrides cascade live. */
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-gold: var(--gold);
+  --color-gold-soft: var(--gold-soft);
+  --color-forest: var(--forest);
+  --color-forest-soft: var(--forest-soft);
+  --color-clay: var(--clay);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+
+  --font-sans: var(--font-hanken), ui-sans-serif, system-ui, -apple-system, sans-serif;
+  --font-display: var(--font-fraunces), ui-serif, Georgia, "Times New Roman", serif;
+
+  --radius-sm: calc(var(--radius) - 0.35rem);
+  --radius-md: calc(var(--radius) - 0.2rem);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 0.4rem);
+  --radius-2xl: calc(var(--radius) + 0.9rem);
+
+  --shadow-soft: 0 1px 2px rgba(34, 25, 15, 0.04), 0 8px 30px -12px rgba(34, 25, 15, 0.12);
+  --shadow-lift: 0 2px 6px rgba(34, 25, 15, 0.06), 0 24px 60px -24px rgba(34, 25, 15, 0.28);
+
+  --animate-fade-up: fade-up 0.7s cubic-bezier(0.22, 1, 0.36, 1) both;
+  --animate-marquee: marquee 42s linear infinite;
+  --animate-accordion-down: accordion-down 0.3s ease-out;
+  --animate-accordion-up: accordion-up 0.3s ease-out;
+  --animate-fade-in: fade-in 0.25s ease both;
+  --animate-fade-out: fade-out 0.2s ease both;
+  --animate-slide-in-right: slide-in-right 0.32s cubic-bezier(0.22, 1, 0.36, 1) both;
+  --animate-slide-out-right: slide-out-right 0.24s ease both;
+
+  @keyframes fade-in { from { opacity: 0; } to { opacity: 1; } }
+  @keyframes fade-out { from { opacity: 1; } to { opacity: 0; } }
+  @keyframes slide-in-right {
+    from { transform: translateX(100%); }
+    to   { transform: translateX(0); }
+  }
+  @keyframes slide-out-right {
+    from { transform: translateX(0); }
+    to   { transform: translateX(100%); }
+  }
+  @keyframes fade-up {
+    from { opacity: 0; transform: translateY(18px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes marquee {
+    from { transform: translateX(0); }
+    to   { transform: translateX(-50%); }
+  }
+  @keyframes accordion-down {
+    from { height: 0; opacity: 0.4; }
+    to   { height: var(--radix-accordion-content-height); opacity: 1; }
+  }
+  @keyframes accordion-up {
+    from { height: var(--radix-accordion-content-height); opacity: 1; }
+    to   { height: 0; opacity: 0.4; }
+  }
+}
+
+@layer base {
+  * {
+    border-color: var(--border);
+  }
+  html {
+    scroll-behavior: smooth;
+    -webkit-text-size-adjust: 100%;
+  }
+  body {
+    background-color: var(--background);
+    color: var(--foreground);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+  }
+  h1, h2, h3, h4, h5 {
+    font-family: var(--font-display);
+    font-weight: 500;
+    letter-spacing: -0.01em;
+  }
+  ::selection {
+    background: color-mix(in oklab, var(--accent) 32%, transparent);
+    color: var(--foreground);
+  }
+  :focus-visible {
+    outline: 2px solid var(--ring);
+    outline-offset: 2px;
+    border-radius: 4px;
+  }
+  /* Respect reduced motion */
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+}
+
+@layer components {
+  /* Consistent page gutter + max width */
+  .site-container {
+    margin-inline: auto;
+    width: 100%;
+    max-width: 80rem; /* 1280px */
+    padding-inline: 1.25rem;
+  }
+  @media (min-width: 640px) { .site-container { padding-inline: 2rem; } }
+  @media (min-width: 1024px) { .site-container { padding-inline: 2.5rem; } }
+
+  /* Small uppercase label used above section headings */
+  .eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--gold);
+  }
+
+  /* Gold gradient text for accented words in display headings */
+  .text-gradient-gold {
+    background: linear-gradient(100deg, var(--gold) 0%, #e6b968 45%, var(--gold) 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  /* Frosted glass surface */
+  .glass {
+    background: color-mix(in oklab, var(--background) 72%, transparent);
+    backdrop-filter: saturate(140%) blur(14px);
+    -webkit-backdrop-filter: saturate(140%) blur(14px);
+  }
+
+  /* Thin hairline divider that adapts to theme */
+  .hairline { height: 1px; background: var(--border); }
+}
+
+@layer utilities {
+  .shadow-soft { box-shadow: var(--shadow-soft); }
+  .shadow-lift { box-shadow: var(--shadow-lift); }
+  .animate-fade-up { animation: var(--animate-fade-up); }
+  .no-scrollbar::-webkit-scrollbar { display: none; }
+  .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+}
