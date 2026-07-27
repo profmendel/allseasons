@@ -3,7 +3,6 @@ import Link from "next/link";
 import { ArrowRight, Check } from "lucide-react";
 import { getPackages } from "@/lib/queries";
 import { PageHeader } from "@/components/page-header";
-import { SectionHeading } from "@/components/section-heading";
 import { Reveal } from "@/components/reveal";
 import { PackageCard } from "@/components/cards/package-card";
 import { Button } from "@/components/ui/button";

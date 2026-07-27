@@ -18,13 +18,13 @@ export function SiteHeader() {
 
   React.useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 12);
-    onScroll();
+    const raf = requestAnimationFrame(onScroll); // async initial read (lint-safe)
     window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
+    return () => {
+      cancelAnimationFrame(raf);
+      window.removeEventListener("scroll", onScroll);
+    };
   }, []);
-
-  // Close mobile menu on route change
-  React.useEffect(() => setOpen(false), [pathname]);
 
   const isActive = (href: string) =>
     href === "/" ? pathname === "/" : pathname.startsWith(href);
@@ -101,6 +101,7 @@ export function SiteHeader() {
                     <Link
                       key={item.href}
                       href={item.href}
+                      onClick={() => setOpen(false)}
                       className={cn(
                         "rounded-xl px-4 py-3 font-display text-lg font-medium transition-colors",
                         isActive(item.href)
@@ -115,7 +116,7 @@ export function SiteHeader() {
                 <div className="flex items-center gap-3 border-t border-border p-5">
                   <ModeToggle />
                   <Button asChild className="flex-1">
-                    <Link href="/request-quote">
+                    <Link href="/request-quote" onClick={() => setOpen(false)}>
                       Request a Quote <ArrowRight className="size-4" />
                     </Link>
                   </Button>
