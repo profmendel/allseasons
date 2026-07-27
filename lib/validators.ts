@@ -26,6 +26,7 @@ export const quoteSchema = z.object({
   contact_phone: z.string().trim().max(40),
   event_type: z.string().max(80),
   event_date: z.string().max(30),
+  event_time: z.string().max(30),
   guest_count: z
     .string()
     .refine((v) => v === "" || (/^\d+$/.test(v) && Number(v) > 0), "Enter a valid number of guests"),
@@ -35,6 +36,14 @@ export const quoteSchema = z.object({
 });
 
 export type QuoteFormValues = z.infer<typeof quoteSchema>;
+
+/** Full booking payload = the wizard's text fields + menu/extra selections. */
+export const bookingSchema = quoteSchema.extend({
+  menu_item_ids: z.array(z.string().max(64)).max(300),
+  extras: z.array(z.object({ name: z.string().max(120) })).max(300),
+});
+
+export type BookingPayload = z.infer<typeof bookingSchema>;
 
 export const contactSchema = z.object({
   name: z.string().trim().min(2, "Please enter your name"),

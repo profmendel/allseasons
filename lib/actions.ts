@@ -3,19 +3,20 @@
 import { Resend } from "resend";
 import { createAdminSupabase } from "@/lib/supabase/admin";
 import {
+  bookingSchema,
   contactSchema,
-  quoteSchema,
   type ActionResult,
+  type BookingPayload,
   type ContactFormValues,
-  type QuoteFormValues,
 } from "@/lib/validators";
 
 /**
- * Submit a quote request. Persists to Supabase when configured; otherwise
- * accepts gracefully so the flow works in preview/dev before wiring services.
+ * Submit a booking / quote request from the guided wizard. Persists to Supabase
+ * when configured; otherwise accepts gracefully so the flow works in
+ * preview/dev before services are wired.
  */
-export async function submitQuoteRequest(raw: QuoteFormValues): Promise<ActionResult> {
-  const parsed = quoteSchema.safeParse(raw);
+export async function submitBooking(raw: BookingPayload): Promise<ActionResult> {
+  const parsed = bookingSchema.safeParse(raw);
   if (!parsed.success) {
     return { ok: false, message: "Please review the form and try again." };
   }
@@ -24,7 +25,7 @@ export async function submitQuoteRequest(raw: QuoteFormValues): Promise<ActionRe
 
   const supabase = createAdminSupabase();
   if (!supabase) {
-    console.info("[quote] Supabase not configured — request received:", {
+    console.info("[booking] Supabase not configured — request received:", {
       ...data,
       guestCount,
     });
@@ -52,9 +53,12 @@ export async function submitQuoteRequest(raw: QuoteFormValues): Promise<ActionRe
       contact_phone: data.contact_phone || null,
       event_type: data.event_type || null,
       event_date: data.event_date || null,
+      event_time: data.event_time || null,
       guest_count: guestCount,
       location: data.location || null,
       package_id: packageId,
+      menu_item_ids: data.menu_item_ids,
+      extras: data.extras,
       special_requests: data.special_requests || null,
       status: "pending",
     })
@@ -62,7 +66,7 @@ export async function submitQuoteRequest(raw: QuoteFormValues): Promise<ActionRe
     .single();
 
   if (error) {
-    console.error("[quote] insert failed:", error.message);
+    console.error("[booking] insert failed:", error.message);
     return {
       ok: false,
       message: "Sorry, something went wrong saving your request. Please try again or contact us directly.",
