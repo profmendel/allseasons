@@ -131,3 +131,101 @@ export async function notifyNewReceipt(booking: Booking) {
   });
   return { ok: true };
 }
+
+/** Acknowledge a new quote request to the customer, with a link to track it. */
+export async function sendRequestReceivedEmail(booking: Booking) {
+  const svc = getResend();
+  if (!svc) return { ok: false };
+  const url = `${siteConfig.url}/quote/${booking.id}`;
+  const body = `
+    <p style="margin:0 0 16px;line-height:1.6;color:#4a4139;">Dear ${booking.contact_name},</p>
+    <p style="margin:0 0 20px;line-height:1.6;color:#4a4139;">
+      Thank you for your interest in All Seasons Catering Company! We've received your request
+      for your ${booking.event_type ?? "event"}${booking.event_date ? ` on ${formatDate(booking.event_date)}` : ""}
+      and our team is preparing a tailored quotation for you.
+    </p>
+    <table role="presentation" width="100%" style="border-top:1px solid #e7dcc7;border-bottom:1px solid #e7dcc7;margin:8px 0 20px;">
+      ${row("Reference", booking.reference, true)}
+      ${booking.guest_count != null ? row("Guests", String(booking.guest_count)) : ""}
+      ${booking.location ? row("Location", booking.location) : ""}
+    </table>
+    <p style="margin:0 0 24px;line-height:1.6;color:#4a4139;">
+      You can view and track the status of your request any time:
+    </p>
+    <p style="margin:0 0 8px;">${button("Track your request", url)}</p>
+  `;
+  await svc.resend.emails.send({
+    from: svc.from,
+    to: booking.contact_email,
+    subject: `We've received your request (${booking.reference})`,
+    html: emailLayout({ heading: "Request received — thank you!", body }),
+  });
+  return { ok: true };
+}
+
+/** Alert the business that a new quote request has arrived. */
+export async function sendNewRequestNotification(booking: Booking) {
+  const svc = getResend();
+  const to = process.env.CONTACT_TO_EMAIL || process.env.RESEND_FROM_EMAIL;
+  if (!svc || !to) return { ok: false };
+  const extras = Array.isArray(booking.extras) && booking.extras.length
+    ? booking.extras.map((e) => e.name).join(", ")
+    : "—";
+  const body = `
+    <p style="margin:0 0 16px;line-height:1.6;color:#4a4139;">A new quote request has come in.</p>
+    <table role="presentation" width="100%" style="border-top:1px solid #e7dcc7;border-bottom:1px solid #e7dcc7;margin:8px 0 20px;">
+      ${row("Name", booking.contact_name, true)}
+      ${row("Email", booking.contact_email)}
+      ${booking.contact_phone ? row("Phone", booking.contact_phone) : ""}
+      ${row("Event", booking.event_type ?? "—")}
+      ${row("Date", booking.event_date ? formatDate(booking.event_date) : "—")}
+      ${row("Guests", booking.guest_count != null ? String(booking.guest_count) : "—")}
+      ${row("Location", booking.location ?? "—")}
+      ${row("Menu items", String(booking.menu_item_ids?.length ?? 0))}
+      ${row("Extras", extras)}
+    </table>
+    ${booking.special_requests ? `<p style="margin:0 0 20px;line-height:1.6;color:#4a4139;"><strong>Requests:</strong> ${booking.special_requests}</p>` : ""}
+    <p style="margin:0 0 8px;">${button("Review & prepare quote", `${siteConfig.url}/quote/${booking.id}`)}</p>
+    <p style="margin:20px 0 0;font-size:13px;color:#6f6455;">Reference: <strong>${booking.reference}</strong></p>
+  `;
+  await svc.resend.emails.send({
+    from: svc.from,
+    to,
+    replyTo: booking.contact_email,
+    subject: `New quote request: ${booking.event_type ?? "Event"} — ${booking.contact_name} (${booking.reference})`,
+    html: emailLayout({ heading: "New quote request", body }),
+  });
+  return { ok: true };
+}
+
+/** Send bank/deposit details to the customer after they accept the quote. */
+export async function sendDepositInstructionsEmail(
+  booking: Booking,
+  bank: { name: string | null; accountName: string | null; accountNumber: string | null },
+) {
+  const svc = getResend();
+  if (!svc) return { ok: false };
+  const url = `${siteConfig.url}/quote/${booking.id}`;
+  const body = `
+    <p style="margin:0 0 16px;line-height:1.6;color:#4a4139;">Dear ${booking.contact_name},</p>
+    <p style="margin:0 0 20px;line-height:1.6;color:#4a4139;">
+      Thank you for accepting your quotation! To secure your date, please pay the deposit below
+      and upload your payment receipt via your quote page.
+    </p>
+    <table role="presentation" width="100%" style="border-top:1px solid #e7dcc7;border-bottom:1px solid #e7dcc7;margin:8px 0 20px;">
+      ${booking.deposit_amount != null ? row("Deposit amount", formatNaira(booking.deposit_amount), true) : ""}
+      ${row("Bank", bank.name ?? "—")}
+      ${row("Account name", bank.accountName ?? "—")}
+      ${row("Account number", bank.accountNumber ?? "—")}
+      ${row("Payment reference", booking.reference)}
+    </table>
+    <p style="margin:0 0 8px;">${button("Upload your receipt", url)}</p>
+  `;
+  await svc.resend.emails.send({
+    from: svc.from,
+    to: booking.contact_email,
+    subject: `Deposit details to confirm your booking (${booking.reference})`,
+    html: emailLayout({ heading: "One step to confirm your booking", body }),
+  });
+  return { ok: true };
+}

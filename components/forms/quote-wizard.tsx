@@ -62,7 +62,9 @@ export function QuoteWizard({
   const [direction, setDirection] = React.useState(1);
   const [selectedMains, setSelectedMains] = React.useState<string[]>([]);
   const [selectedExtras, setSelectedExtras] = React.useState<string[]>([]);
-  const [result, setResult] = React.useState<{ reference?: string } | null>(null);
+  const [result, setResult] = React.useState<{ reference?: string; bookingId?: string } | null>(
+    null,
+  );
 
   const form = useForm<QuoteFormValues>({
     resolver: zodResolver(quoteSchema),
@@ -144,7 +146,7 @@ export function QuoteWizard({
       extras,
     });
     if (res.ok) {
-      setResult({ reference: res.reference });
+      setResult({ reference: res.reference, bookingId: res.bookingId });
       toast.success(res.message);
     } else {
       toast.error(res.message);
@@ -159,8 +161,8 @@ export function QuoteWizard({
         </span>
         <h2 className="mt-6 font-display text-2xl font-medium tracking-tight">Your request is in!</h2>
         <p className="mt-3 text-muted-foreground">
-          Thank you for choosing All Seasons. Our team will review your event details and send a
-          professional quotation to your email shortly.
+          Thank you for choosing All Seasons. We&apos;ve emailed you a confirmation — our team will
+          review your event details and send a professional quotation shortly.
         </p>
         {result.reference && (
           <p className="mt-4 text-sm">
@@ -171,9 +173,17 @@ export function QuoteWizard({
           </p>
         )}
         <div className="mt-8 flex flex-col justify-center gap-3 sm:flex-row">
-          <Button asChild>
-            <Link href="/">Back to home</Link>
-          </Button>
+          {result.bookingId ? (
+            <Button asChild>
+              <Link href={`/quote/${result.bookingId}`}>
+                Track your request <ArrowRight className="size-4" />
+              </Link>
+            </Button>
+          ) : (
+            <Button asChild>
+              <Link href="/">Back to home</Link>
+            </Button>
+          )}
           <Button variant="outline" asChild>
             <Link href="/menu">Explore the menu</Link>
           </Button>

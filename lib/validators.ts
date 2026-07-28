@@ -59,4 +59,5 @@ export type ActionResult = {
   ok: boolean;
   message: string;
   reference?: string;
+  bookingId?: string;
 };

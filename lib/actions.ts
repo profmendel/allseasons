@@ -2,7 +2,12 @@
 
 import { Resend } from "resend";
 import { createAdminSupabase } from "@/lib/supabase/admin";
-import { notifyNewReceipt } from "@/lib/email";
+import {
+  notifyNewReceipt,
+  sendDepositInstructionsEmail,
+  sendNewRequestNotification,
+  sendRequestReceivedEmail,
+} from "@/lib/email";
 import type { Booking } from "@/types/db";
 import {
   bookingSchema,
@@ -64,21 +69,31 @@ export async function submitBooking(raw: BookingPayload): Promise<ActionResult> 
       special_requests: data.special_requests || null,
       status: "pending",
     })
-    .select("reference")
+    .select("*")
     .single();
 
-  if (error) {
-    console.error("[booking] insert failed:", error.message);
+  if (error || !inserted) {
+    console.error("[booking] insert failed:", error?.message);
     return {
       ok: false,
       message: "Sorry, something went wrong saving your request. Please try again or contact us directly.",
     };
   }
 
+  const booking = inserted as Booking;
+
+  // Acknowledge to the customer + alert the business (best-effort — a failed
+  // email must not fail the booking).
+  await Promise.allSettled([
+    sendRequestReceivedEmail(booking),
+    sendNewRequestNotification(booking),
+  ]);
+
   return {
     ok: true,
     message: "Thank you! Your quote request has been received. We'll prepare your quotation shortly.",
-    reference: inserted?.reference ?? undefined,
+    reference: booking.reference,
+    bookingId: booking.id,
   };
 }
 
@@ -159,6 +174,28 @@ export async function acceptQuote(id: string): Promise<ActionResult> {
     console.error("[acceptQuote] failed:", error.message);
     return { ok: false, message: "Sorry, we couldn't update your quote. Please try again." };
   }
+
+  // Email the customer their deposit/bank details (best-effort).
+  try {
+    const [{ data: booking }, { data: settings }] = await Promise.all([
+      supabase.from("bookings").select("*").eq("id", id).maybeSingle(),
+      supabase
+        .from("site_settings")
+        .select("bank_name, bank_account_name, bank_account_number")
+        .limit(1)
+        .maybeSingle(),
+    ]);
+    if (booking) {
+      await sendDepositInstructionsEmail(booking as Booking, {
+        name: settings?.bank_name ?? null,
+        accountName: settings?.bank_account_name ?? null,
+        accountNumber: settings?.bank_account_number ?? null,
+      });
+    }
+  } catch (err) {
+    console.error("[acceptQuote] deposit email failed:", err);
+  }
+
   return { ok: true, message: "Quote accepted! Please complete your deposit to confirm." };
 }
 
