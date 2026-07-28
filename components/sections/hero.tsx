@@ -109,31 +109,34 @@ export function Hero({ slides, stats }: { slides: HeroSlide[]; stats: Stat[] }) 
               initial={{ opacity: 0, y: 24 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
-              className="row-span-2 overflow-hidden rounded-3xl shadow-lift"
+              className="relative row-span-2 overflow-hidden rounded-3xl shadow-lift"
             >
-              <div className="relative aspect-[3/4.4] w-full">
+              <div className="relative h-full w-full">
                 <Media src="/images/hero/partjollofportrait.png" alt="Party jollof rice" label="Party Jollof" priority sizes="(min-width:1024px) 26vw, 50vw" />
               </div>
+              <TileCaption>Party Jollof</TileCaption>
             </motion.div>
             <motion.div
               initial={{ opacity: 0, y: 24 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.7, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}
-              className="overflow-hidden rounded-3xl shadow-lift"
+              className="relative overflow-hidden rounded-3xl shadow-lift"
             >
               <div className="relative aspect-square w-full">
                 <Media src="/images/hero/pepperedchicken.png" alt="Peppered chicken" label="Peppered Chicken" priority sizes="(min-width:1024px) 22vw, 50vw" />
               </div>
+              <TileCaption>Peppered Chicken</TileCaption>
             </motion.div>
             <motion.div
               initial={{ opacity: 0, y: 24 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.7, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
-              className="overflow-hidden rounded-3xl shadow-lift"
+              className="relative overflow-hidden rounded-3xl shadow-lift"
             >
               <div className="relative aspect-square w-full">
                 <Media src="/images/hero/smallchops.png" alt="Small chops platter" label="Small Chops" priority sizes="(min-width:1024px) 22vw, 50vw" />
               </div>
+              <TileCaption>Small Chops</TileCaption>
             </motion.div>
           </div>
 
@@ -154,5 +157,15 @@ export function Hero({ slides, stats }: { slides: HeroSlide[]; stats: Stat[] }) 
         </div>
       </div>
     </section>
+  );
+}
+
+function TileCaption({ children }: { children: React.ReactNode }) {
+  return (
+    <div className="pointer-events-none absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/65 via-black/15 to-transparent p-4 pt-12">
+      <span className="font-display text-base font-medium text-white drop-shadow-sm">
+        {children}
+      </span>
+    </div>
   );
 }
