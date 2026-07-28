@@ -208,16 +208,16 @@ export const seedMenuCategories: MenuCategory[] = [
 
 export const seedMenuItems: MenuItem[] = [
   // Rice
-  { id: "mi-jollof", category_id: "mc-rice", name: "Party Jollof Rice", description: "Smoky, tomato-rich jollof — the star of every Nigerian party.", image_url: null, is_optional_extra: false, sort_order: 1, is_active: true },
-  { id: "mi-fried-rice", category_id: "mc-rice", name: "Fried Rice", description: "Colourful vegetable fried rice with liver and shrimp.", image_url: null, is_optional_extra: false, sort_order: 2, is_active: true },
-  { id: "mi-coconut-rice", category_id: "mc-rice", name: "Coconut Rice", description: "Fragrant rice simmered in fresh coconut milk.", image_url: null, is_optional_extra: false, sort_order: 3, is_active: true },
-  { id: "mi-ofada", category_id: "mc-rice", name: "Ofada Rice & Ayamase", description: "Local ofada rice with spicy designer stew.", image_url: null, is_optional_extra: false, sort_order: 4, is_active: true },
-  { id: "mi-chinese-rice", category_id: "mc-rice", name: "Chinese Fried Rice", description: "Wok-tossed rice with a continental twist.", image_url: null, is_optional_extra: false, sort_order: 5, is_active: true },
+  { id: "mi-jollof", category_id: "mc-rice", name: "Party Jollof Rice", description: "Smoky, tomato-rich jollof — the star of every Nigerian party.", image_url: "/images/menu/jollofrice.png", is_optional_extra: false, sort_order: 1, is_active: true },
+  { id: "mi-fried-rice", category_id: "mc-rice", name: "Fried Rice", description: "Colourful vegetable fried rice with liver and shrimp.", image_url: "/images/menu/friedrice.png", is_optional_extra: false, sort_order: 2, is_active: true },
+  { id: "mi-coconut-rice", category_id: "mc-rice", name: "Coconut Rice", description: "Fragrant rice simmered in fresh coconut milk.", image_url: "/images/menu/coconutrice.png", is_optional_extra: false, sort_order: 3, is_active: true },
+  { id: "mi-ofada", category_id: "mc-rice", name: "Ofada Rice & Ayamase", description: "Local ofada rice with spicy designer stew.", image_url: "/images/menu/ofadarice.png", is_optional_extra: false, sort_order: 4, is_active: true },
+  { id: "mi-chinese-rice", category_id: "mc-rice", name: "Chinese Fried Rice", description: "Wok-tossed rice with a continental twist.", image_url: "/images/menu/chinesefriedrice.png", is_optional_extra: false, sort_order: 5, is_active: true },
 
   // Soups
-  { id: "mi-egusi", category_id: "mc-soups", name: "Egusi Soup", description: "Melon-seed soup loaded with assorted meat and fish.", image_url: null, is_optional_extra: false, sort_order: 1, is_active: true },
-  { id: "mi-oha", category_id: "mc-soups", name: "Oha Soup", description: "Delicate Eastern soup with tender oha leaves.", image_url: null, is_optional_extra: false, sort_order: 2, is_active: true },
-  { id: "mi-afang", category_id: "mc-soups", name: "Afang Soup", description: "Nutritious vegetable soup, a coastal favourite.", image_url: null, is_optional_extra: false, sort_order: 3, is_active: true },
+  { id: "mi-egusi", category_id: "mc-soups", name: "Egusi Soup", description: "Melon-seed soup loaded with assorted meat and fish.", image_url: "/images/menu/egusisoup.png", is_optional_extra: false, sort_order: 1, is_active: true },
+  { id: "mi-oha", category_id: "mc-soups", name: "Oha Soup", description: "Delicate Eastern soup with tender oha leaves.", image_url: "/images/menu/uhasoup.png", is_optional_extra: false, sort_order: 2, is_active: true },
+  { id: "mi-afang", category_id: "mc-soups", name: "Afang Soup", description: "Nutritious vegetable soup, a coastal favourite.", image_url: "/images/menu/afangsoup.png", is_optional_extra: false, sort_order: 3, is_active: true },
   { id: "mi-nsala", category_id: "mc-soups", name: "Ofe Nsala (White Soup)", description: "Aromatic white soup with catfish and utazi.", image_url: null, is_optional_extra: false, sort_order: 4, is_active: true },
   { id: "mi-banga", category_id: "mc-soups", name: "Banga Soup", description: "Rich palm-fruit soup bursting with flavour.", image_url: null, is_optional_extra: false, sort_order: 5, is_active: true },
 

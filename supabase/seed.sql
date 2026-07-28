@@ -124,6 +124,16 @@ from (values
 ) as v(cat_slug, name, description, is_optional_extra, sort_order)
 join public.menu_categories c on c.slug = v.cat_slug;
 
+-- Food photography for the homepage showcase dishes
+update public.menu_items set image_url = '/images/menu/jollofrice.png'       where name = 'Party Jollof Rice';
+update public.menu_items set image_url = '/images/menu/friedrice.png'        where name = 'Fried Rice';
+update public.menu_items set image_url = '/images/menu/coconutrice.png'      where name = 'Coconut Rice';
+update public.menu_items set image_url = '/images/menu/ofadarice.png'        where name = 'Ofada Rice & Ayamase';
+update public.menu_items set image_url = '/images/menu/chinesefriedrice.png' where name = 'Chinese Fried Rice';
+update public.menu_items set image_url = '/images/menu/egusisoup.png'        where name = 'Egusi Soup';
+update public.menu_items set image_url = '/images/menu/uhasoup.png'          where name = 'Oha Soup';
+update public.menu_items set image_url = '/images/menu/afangsoup.png'        where name = 'Afang Soup';
+
 -- ---- Gallery events ---------------------------------------------------------
 insert into public.gallery_events (slug, title, event_type, location, guest_count, event_date, description, is_featured, sort_order) values
   ('royal-garden-wedding', 'Royal Garden Wedding', 'Wedding', 'Lekki, Lagos', 500, '2025-11-14', 'A breathtaking outdoor wedding with a five-station live buffet and bespoke cocktail bar.', true, 1),
