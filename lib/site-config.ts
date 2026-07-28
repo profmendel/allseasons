@@ -4,13 +4,30 @@
  * for structural things (nav, routes) and last-resort defaults.
  */
 
+/**
+ * Normalise the site URL into a valid absolute URL. Accepts values with or
+ * without a scheme (e.g. "example.com" or "https://example.com") so a mis-typed
+ * env var can't break the build via `new URL(...)`.
+ */
+function resolveSiteUrl(): string {
+  const fallback = "http://localhost:3000";
+  const raw = process.env.NEXT_PUBLIC_SITE_URL?.trim();
+  if (!raw) return fallback;
+  const withScheme = /^https?:\/\//i.test(raw) ? raw : `https://${raw}`;
+  try {
+    return new URL(withScheme).origin;
+  } catch {
+    return fallback;
+  }
+}
+
 export const siteConfig = {
   name: "All Seasons Catering Company",
   shortName: "All Seasons",
   monogram: "AS",
   description:
     "Premium catering for weddings, corporate events and celebrations across Nigeria. Exceptional food, flawless service, unforgettable events.",
-  url: process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000",
+  url: resolveSiteUrl(),
   // Fallback contact details (overridden by site_settings in the DB when set)
   contact: {
     phone: "+234 800 000 0000",
