@@ -27,7 +27,7 @@ insert into public.stats (label, value, suffix, sort_order) values
 
 -- ---- Hero slides ------------------------------------------------------------
 insert into public.hero_slides (eyebrow, headline, subheadline, cta_label, cta_href, sort_order) values
-  ('Premium Event Catering', 'Catering that makes every season unforgettable',
+  ('Premium Event Catering', 'We make every season unforgettable',
    'From intimate gatherings to grand celebrations, we craft menus and moments your guests will talk about for years.',
    'Request a Quote', '/request-quote', 1),
   ('Weddings & Traditional Marriages', 'A feast worthy of the day you''ll never forget',

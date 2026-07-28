@@ -50,7 +50,7 @@ export const seedHeroSlides: HeroSlide[] = [
   {
     id: "h1",
     eyebrow: "Premium Event Catering",
-    headline: "Catering that makes every season unforgettable",
+    headline: "We make every season unforgettable",
     subheadline:
       "From intimate gatherings to grand celebrations, we craft menus and moments your guests will talk about for years.",
     image_url: null,
