@@ -3,33 +3,52 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
+  BarChart3,
+  Briefcase,
   CalendarCheck,
+  HelpCircle,
   Images,
   LayoutDashboard,
+  List,
   LogOut,
   Package,
   Settings,
   Sparkles,
   Star,
   UtensilsCrossed,
+  type LucideIcon,
 } from "lucide-react";
 import { signOutAdmin } from "@/lib/admin-actions";
+import { CONTENT, CONTENT_ORDER } from "@/lib/admin-content-config";
 import { cn } from "@/lib/utils";
 import { Logo } from "@/components/logo";
 
-const NAV = [
+type NavItem = { label: string; href: string; icon: LucideIcon };
+
+const MAIN: NavItem[] = [
   { label: "Overview", href: "/admin", icon: LayoutDashboard },
   { label: "Bookings", href: "/admin/bookings", icon: CalendarCheck },
 ];
 
-const SOON = [
-  { label: "Packages", icon: Package },
-  { label: "Menu", icon: UtensilsCrossed },
-  { label: "Gallery", icon: Images },
-  { label: "Testimonials", icon: Star },
-  { label: "Services", icon: Sparkles },
-  { label: "Settings", icon: Settings },
-];
+const CONTENT_ICONS: Record<string, LucideIcon> = {
+  hero: Sparkles,
+  packages: Package,
+  "menu-categories": List,
+  "menu-items": UtensilsCrossed,
+  gallery: Images,
+  services: Briefcase,
+  testimonials: Star,
+  faqs: HelpCircle,
+  stats: BarChart3,
+};
+
+const CONTENT_NAV: NavItem[] = CONTENT_ORDER.map((key) => ({
+  label: CONTENT[key].plural,
+  href: `/admin/content/${key}`,
+  icon: CONTENT_ICONS[key] ?? List,
+}));
+
+const SITE: NavItem[] = [{ label: "Settings", href: "/admin/settings", icon: Settings }];
 
 export function AdminShell({
   userEmail,
@@ -42,6 +61,16 @@ export function AdminShell({
   const isActive = (href: string) =>
     href === "/admin" ? pathname === "/admin" : pathname.startsWith(href);
 
+  const linkClass = (href: string) =>
+    cn(
+      "flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition-colors",
+      isActive(href)
+        ? "bg-primary text-primary-foreground"
+        : "text-muted-foreground hover:bg-secondary hover:text-foreground",
+    );
+
+  const allMobile = [...MAIN, ...CONTENT_NAV, ...SITE];
+
   return (
     <div className="min-h-screen bg-secondary/20">
       {/* Desktop sidebar */}
@@ -50,35 +79,31 @@ export function AdminShell({
           <Logo />
         </div>
         <nav className="flex-1 space-y-1 overflow-y-auto p-4">
-          {NAV.map((item) => (
-            <Link
-              key={item.href}
-              href={item.href}
-              className={cn(
-                "flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition-colors",
-                isActive(item.href)
-                  ? "bg-primary text-primary-foreground"
-                  : "text-muted-foreground hover:bg-secondary hover:text-foreground",
-              )}
-            >
+          {MAIN.map((item) => (
+            <Link key={item.href} href={item.href} className={linkClass(item.href)}>
               <item.icon className="size-[1.15rem]" />
               {item.label}
             </Link>
           ))}
+
           <p className="px-3 pb-2 pt-5 text-xs font-semibold uppercase tracking-wider text-muted-foreground/70">
-            Content — coming soon
+            Content
           </p>
-          {SOON.map((item) => (
-            <span
-              key={item.label}
-              className="flex cursor-not-allowed items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium text-muted-foreground/50"
-            >
+          {CONTENT_NAV.map((item) => (
+            <Link key={item.href} href={item.href} className={linkClass(item.href)}>
               <item.icon className="size-[1.15rem]" />
               {item.label}
-              <span className="ml-auto rounded-full bg-muted px-1.5 py-0.5 text-[0.6rem] uppercase tracking-wide">
-                Soon
-              </span>
-            </span>
+            </Link>
+          ))}
+
+          <p className="px-3 pb-2 pt-5 text-xs font-semibold uppercase tracking-wider text-muted-foreground/70">
+            Site
+          </p>
+          {SITE.map((item) => (
+            <Link key={item.href} href={item.href} className={linkClass(item.href)}>
+              <item.icon className="size-[1.15rem]" />
+              {item.label}
+            </Link>
           ))}
         </nav>
         <div className="border-t border-border p-4">
@@ -90,7 +115,7 @@ export function AdminShell({
               type="submit"
               className="flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium text-muted-foreground transition-colors hover:bg-destructive/10 hover:text-destructive"
             >
-              <LogOut className="size-[1.15rem] " /> Sign out
+              <LogOut className="size-[1.15rem]" /> Sign out
             </button>
           </form>
         </div>
@@ -106,7 +131,7 @@ export function AdminShell({
         </form>
       </div>
       <div className="no-scrollbar sticky top-14 z-30 flex gap-2 overflow-x-auto border-b border-border bg-card px-4 py-2 lg:hidden">
-        {NAV.map((item) => (
+        {allMobile.map((item) => (
           <Link
             key={item.href}
             href={item.href}
