@@ -112,7 +112,7 @@ export function Hero({ slides, stats }: { slides: HeroSlide[]; stats: Stat[] }) 
               className="row-span-2 overflow-hidden rounded-3xl shadow-lift"
             >
               <div className="relative aspect-[3/4.4] w-full">
-                <Media alt="Party jollof rice" label="Party Jollof" sizes="(min-width:1024px) 26vw, 50vw" />
+                <Media src="/images/hero/partjollofportrait.png" alt="Party jollof rice" label="Party Jollof" priority sizes="(min-width:1024px) 26vw, 50vw" />
               </div>
             </motion.div>
             <motion.div
@@ -122,7 +122,7 @@ export function Hero({ slides, stats }: { slides: HeroSlide[]; stats: Stat[] }) 
               className="overflow-hidden rounded-3xl shadow-lift"
             >
               <div className="relative aspect-square w-full">
-                <Media alt="Peppered chicken" label="Peppered Chicken" sizes="(min-width:1024px) 22vw, 50vw" />
+                <Media src="/images/hero/pepperedchicken.png" alt="Peppered chicken" label="Peppered Chicken" priority sizes="(min-width:1024px) 22vw, 50vw" />
               </div>
             </motion.div>
             <motion.div
@@ -132,7 +132,7 @@ export function Hero({ slides, stats }: { slides: HeroSlide[]; stats: Stat[] }) 
               className="overflow-hidden rounded-3xl shadow-lift"
             >
               <div className="relative aspect-square w-full">
-                <Media alt="Small chops platter" label="Small Chops" sizes="(min-width:1024px) 22vw, 50vw" />
+                <Media src="/images/hero/smallchops.png" alt="Small chops platter" label="Small Chops" priority sizes="(min-width:1024px) 22vw, 50vw" />
               </div>
             </motion.div>
           </div>
