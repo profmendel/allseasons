@@ -7,7 +7,7 @@
  * Supabase credentials are added — no code changes required.
  */
 
-import { createServerSupabase } from "@/lib/supabase/server";
+import { createPublicSupabase } from "@/lib/supabase/server";
 import {
   seedFaqs,
   seedGalleryEvents,
@@ -36,12 +36,12 @@ import type {
 async function fetchOrSeed<T>(
   table: string,
   seed: T[],
-  build: (q: NonNullable<Awaited<ReturnType<typeof createServerSupabase>>>) => PromiseLike<{
+  build: (q: NonNullable<Awaited<ReturnType<typeof createPublicSupabase>>>) => PromiseLike<{
     data: T[] | null;
     error: unknown;
   }>,
 ): Promise<T[]> {
-  const supabase = await createServerSupabase();
+  const supabase = createPublicSupabase();
   if (!supabase) return seed;
   try {
     const { data, error } = await build(supabase);
@@ -53,7 +53,7 @@ async function fetchOrSeed<T>(
 }
 
 export async function getSiteSettings(): Promise<SiteSettings> {
-  const supabase = await createServerSupabase();
+  const supabase = createPublicSupabase();
   if (!supabase) return seedSiteSettings;
   try {
     const { data, error } = await supabase
@@ -117,7 +117,7 @@ export async function getEvents(): Promise<GalleryEvent[]> {
 
 /** Menu grouped by category, each with its items. */
 export async function getMenu(): Promise<MenuCategoryWithItems[]> {
-  const supabase = await createServerSupabase();
+  const supabase = createPublicSupabase();
 
   let categories = seedMenuCategories;
   let items: MenuItem[] = seedMenuItems;

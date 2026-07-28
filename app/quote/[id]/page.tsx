@@ -9,6 +9,9 @@ export const metadata: Metadata = {
   robots: { index: false, follow: false },
 };
 
+// Always render fresh — booking status changes as the customer acts.
+export const dynamic = "force-dynamic";
+
 export default async function QuotePage({
   params,
 }: {

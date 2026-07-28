@@ -20,6 +20,11 @@ const hanken = Hanken_Grotesk({
   display: "swap",
 });
 
+// Site-wide ISR: pages are statically generated and refreshed every 5 minutes,
+// so admin content edits appear without a redeploy. Routes with per-request data
+// (the quote portal, quote wizard) opt into dynamic rendering themselves.
+export const revalidate = 300;
+
 export const metadata: Metadata = {
   metadataBase: new URL(siteConfig.url),
   title: {
