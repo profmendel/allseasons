@@ -3,8 +3,6 @@ import { Fraunces, Hanken_Grotesk } from "next/font/google";
 import "./globals.css";
 import { siteConfig } from "@/lib/site-config";
 import { ThemeProvider } from "@/components/theme-provider";
-import { SiteHeader } from "@/components/site-header";
-import { SiteFooter } from "@/components/site-footer";
 import { Toaster } from "@/components/ui/sonner";
 
 const fraunces = Fraunces({
@@ -19,11 +17,6 @@ const hanken = Hanken_Grotesk({
   variable: "--font-hanken",
   display: "swap",
 });
-
-// Site-wide ISR: pages are statically generated and refreshed every 5 minutes,
-// so admin content edits appear without a redeploy. Routes with per-request data
-// (the quote portal, quote wizard) opt into dynamic rendering themselves.
-export const revalidate = 300;
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteConfig.url),
@@ -72,9 +65,7 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          <SiteHeader />
-          <main className="flex-1">{children}</main>
-          <SiteFooter />
+          {children}
           <Toaster />
         </ThemeProvider>
       </body>
