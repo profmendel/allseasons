@@ -162,8 +162,8 @@ export function Hero({ slides, stats }: { slides: HeroSlide[]; stats: Stat[] }) 
 
 function TileCaption({ children }: { children: React.ReactNode }) {
   return (
-    <div className="pointer-events-none absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/65 via-black/15 to-transparent p-4 pt-12">
-      <span className="font-display text-base font-medium text-white drop-shadow-sm">
+    <div className="pointer-events-none absolute inset-0 flex items-center justify-center p-4 text-center">
+      <span className="text-shadow-strong font-display text-xl font-semibold tracking-tight text-white sm:text-2xl">
         {children}
       </span>
     </div>
